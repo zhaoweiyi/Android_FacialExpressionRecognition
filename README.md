@@ -7,3 +7,6 @@
 4、训练好的模型
 
 5、遇到的一些问题
+
+Tips:
+如果Github下载速度很慢，参考https://blog.csdn.net/qq924795111/article/details/80799704进行配置
