@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -13,7 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.widget.ImageView;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -30,15 +28,11 @@ import org.opencv.core.MatOfRect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
-import org.opencv.core.CvType;
 import org.opencv.objdetect.CascadeClassifier;
 import org.opencv.core.Rect;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
@@ -88,8 +82,7 @@ public class MainActivity extends AppCompatActivity{
             writer.write(s);
             writer.write("/n");
             writer.flush();
-            writer.close();//记得关闭
-            Log.d("hehe","wwwwwwwwwwwwww");
+            writer.close();
             outStream.close();
         }
         catch (Exception e)
@@ -105,7 +98,6 @@ public class MainActivity extends AppCompatActivity{
         Mat src = new Mat();
         Mat dst = new Mat();
         Utils.bitmapToMat(bitmap, src);
-        //new Size(width, height)
         Imgproc.resize(src, dst, new Size(width,height),0,0,Imgproc.INTER_AREA);
         Bitmap bitmap1 = Bitmap.createBitmap(dst.cols(),dst.rows(),Bitmap.Config.ARGB_8888);
         Utils.matToBitmap(dst, bitmap1);
@@ -135,15 +127,9 @@ public class MainActivity extends AppCompatActivity{
                 floatValues[i + j* IMAGE_SIZE] = gray / 255.0f;
                 sBuffer.append(gray) ;
                 sBuffer.append(" ") ;
-
-                if ((i == 0) && (j<10)) {
-                    Log.d("hehe",j + ":" + String.valueOf(gray));
-                }
-                //Log.v("tag",  Integer.toHexString(col));
             }
         }
-
-        putStringToTxt(sBuffer.toString(), "pixel");
+        //putStringToTxt(sBuffer.toString(), "pixel");
         return floatValues;
     }
 
@@ -154,9 +140,7 @@ public class MainActivity extends AppCompatActivity{
 
         try {
             Bitmap bm1 = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), m, true);
-
             return bm1;
-
         } catch (OutOfMemoryError ex) {
         }
         return null;
@@ -180,18 +164,18 @@ public class MainActivity extends AppCompatActivity{
 
         if(img.channels() ==3)
         {
-            Imgproc.cvtColor(img, imgGray, Imgproc.COLOR_RGB2GRAY);      // RGB转化为灰度
+            Imgproc.cvtColor(img, imgGray, Imgproc.COLOR_RGB2GRAY);
         }
         else
         {
-            imgGray = img;      // 不转化
+            imgGray = img;
         }
 
         cascadeClassifier.detectMultiScale(imgGray, faces, 1.1, 2, 2, new Size(absoluteFaceSize, absoluteFaceSize), new Size());
 
         Rect[] facesArray = faces.toArray();
         if (facesArray.length > 0){
-            for (int i = 0; i < facesArray.length; i++) {    //用框标记
+            for (int i = 0; i < facesArray.length; i++) {
                 Imgproc.rectangle(imgGray, facesArray[i].tl(), facesArray[i].br(), new Scalar(0, 255, 0, 255), 3);
                 Log.d("ccx","index:" + i + "topLeft:" + facesArray[i].tl() + "bottomRight:" + facesArray[i].br()+ "height:" + facesArray[i].height);
             }
@@ -227,13 +211,12 @@ public class MainActivity extends AppCompatActivity{
                 Log.d("ccx","Tensorflow return is error.");;break;
         }
         reslutTextView.setText("识别结果: " + str);
-
         return;
     }
 
     private void initializeOpenCVDependencies() {
         try {
-            InputStream is = getResources().openRawResource(R.raw.lbpcascade_frontalface_improved); //OpenCV的人脸模型文件： lbpcascade_frontalface_improved
+            InputStream is = getResources().openRawResource(R.raw.lbpcascade_frontalface_improved);
             File cascadeDir = getDir("cascade", Context.MODE_PRIVATE);
             File mCascadeFile = new File(cascadeDir, "lbpcascade_frontalface_improved.xml");
             FileOutputStream os = new FileOutputStream(mCascadeFile);
@@ -252,7 +235,6 @@ public class MainActivity extends AppCompatActivity{
     }
 
     class MyClickListener implements OnClickListener{
-
         @Override
         public void onClick(View v) {
             // TODO Auto-generated method stub
@@ -274,10 +256,6 @@ public class MainActivity extends AppCompatActivity{
                     startActivityForResult(intent, 0);
                     break;
                 case R.id.btn_grey_photo:
-                    //Bitmap bitmap2 = RGBtoGrayscale();
-                    // Bitmap bitmap = BitmapFactory.decodeResource(MainActivity.this.getApplicationContext().getResources(), R.drawable.gqsz);
-                    //Bitmap bitmap1 = scaleImage(bitmap, 48, 48);
-                    //Bitmap bitmap2 = toGrayscale(bitmap1);
                     String pathString = Environment.getExternalStorageDirectory() + "/tempImage" + ".jpg";
                     Log.d("matrix",pathString + "");
                     Bitmap bitmap = null;
@@ -317,9 +295,7 @@ public class MainActivity extends AppCompatActivity{
         getPhotoButton = (Button)findViewById(R.id.btn_get_photo);
         greyPhotoButton = (Button)findViewById(R.id.btn_grey_photo);
         reslutTextView = (TextView)findViewById(R.id.tv_output);
-
         initializeOpenCVDependencies();
-
         getPhotoButton.setOnClickListener(new MyClickListener());
         greyPhotoButton.setOnClickListener(new MyClickListener());
     }

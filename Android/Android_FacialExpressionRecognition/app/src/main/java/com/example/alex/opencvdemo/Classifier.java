@@ -49,26 +49,14 @@ public class Classifier {
         float[] outlayer = new float[7];
         inferenceInterface.fetch(outlayerName, outlayer);
 
-        for(int i = 0; i <7; ++i)
-        {
-            Log.d("matrix",outlayer[i] + "");
-        }
-
         int[] labels = new int[1];
         inferenceInterface.fetch(outputName,labels);
         int label = labels[0];
         float[] prob = new float[7];
         inferenceInterface.fetch(probabilityName, prob);
 
-        //0=Angry, 1=Disgust, 2=Fear, 3=Happy, 4=Sad, 5=Surprise, 6=Neutral
-        for(int i = 0; i <7; ++i)
-        {
-           Log.d("matrix",prob[i] + "");
-        }
-
         DecimalFormat df = new DecimalFormat("0.000000");
         float label_prob = prob[label];
-        //返回值
         list.add(Integer.toString(label));
         list.add(df.format(label_prob));
 
